@@ -46,7 +46,7 @@ class StephencelisDB {
         }
     }
     
-    func addContact(cname: String, cphone: String, caddress: String) -> Int64{
+    func addContact(cname: String, cphone: String, caddress: String) -> Int64? {
         do {
             let insert = contacts.insert(name <- cname, phone <- cphone, address <- caddress)
             let id = try db!.run(insert)
@@ -54,7 +54,7 @@ class StephencelisDB {
             return id
         } catch {
             print("Insert failed")
-            return -1
+            return nil
         }
     }
     

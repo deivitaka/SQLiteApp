@@ -17,7 +17,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var contactsTableView: UITableView!
     
     private var contacts = [Contact]()
-    private var selectedContact = -1
+    private var selectedContact: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +41,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let phone = phoneTextField.text ?? ""
         let address = addressTextField.text ?? ""
         
-        let id = StephencelisDB.instance.addContact(name, cphone: phone, caddress: address)
-        if id != -1 {
+        if let id = StephencelisDB.instance.addContact(name, cphone: phone, caddress: address) {
             let contact = Contact(id: id, name: name, phone: phone, address: address)
             contacts.append(contact)
             contactsTableView.insertRowsAtIndexPaths([NSIndexPath(forRow: contacts.count-1, inSection: 0)], withRowAnimation: .Fade)
@@ -50,8 +49,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     @IBAction func updateButtonClicked() {
-        if selectedContact != -1 {
-            let id = contacts[selectedContact].id!
+        if selectedContact != nil {
+            let id = contacts[selectedContact!].id!
             let contact = Contact(
                 id: id,
                 name: nameTextField.text ?? "",
@@ -60,8 +59,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             
             StephencelisDB.instance.updateContact(id, newContact: contact)
             
-            contacts.removeAtIndex(selectedContact)
-            contacts.insert(contact, atIndex: selectedContact)
+            contacts.removeAtIndex(selectedContact!)
+            contacts.insert(contact, atIndex: selectedContact!)
             
             contactsTableView.reloadData()
         } else {
@@ -70,10 +69,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     @IBAction func deleteButtonClicked() {
-        if selectedContact != -1 {
-            StephencelisDB.instance.deleteContact(contacts[selectedContact].id!)
-            contacts.removeAtIndex(selectedContact)
-            contactsTableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: selectedContact, inSection: 0)], withRowAnimation: .Fade)
+        if selectedContact != nil {
+            StephencelisDB.instance.deleteContact(contacts[selectedContact!].id!)
+            contacts.removeAtIndex(selectedContact!)
+            contactsTableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: selectedContact!, inSection: 0)], withRowAnimation: .Fade)
         } else {
         print("No item selected")
         }
